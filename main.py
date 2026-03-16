@@ -10,11 +10,10 @@ from scoring.trust_score import calculate_trust_score
 data = []
 
 # Blog sources
-#blogs = [    "https://machinelearningmastery.com/", "https://towardsdatascience.com/", "https://ai.googleblog.com/"]
 blogs = [
 "https://machinelearningmastery.com/what-is-machine-learning/",
-"https://towardsdatascience.com/what-is-deep-learning-2317a1c31f3c",
-"https://towardsdatascience.com/neural-networks-explained-6e21c70e3b1c"
+"https://machinelearningmastery.com/5-tips-for-getting-started-with-deep-learning/",
+"https://machinelearningmastery.com/a-gentle-introduction-to-the-challenge-of-training-deep-learning-neural-network-models/"
 ]
 
 for blog in blogs:
@@ -27,8 +26,8 @@ for blog in blogs:
 
 # YouTube sources
 videos = [
-    "3fumBcKC6RE",
-    "dQw4w9WgXcQ"
+"aircAruvnKk",
+"IHZwWFHWa-w"
 ]
 
 for vid in videos:
