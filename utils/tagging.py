@@ -2,27 +2,32 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 def extract_topics(text_list, top_n=5):
 
-    # remove empty strings
-    text_list = [t for t in text_list if t.strip() != ""]
-
-    if len(text_list) == 0:
+    # Safety check: if input is None
+    if not text_list:
         return []
 
-    text = " ".join(text_list)
+    # Remove empty or very short text
+    cleaned = []
+    for t in text_list:
+        if isinstance(t, str) and len(t.strip()) > 20:
+            cleaned.append(t.strip())
+
+    # If nothing usable remains
+    if len(cleaned) == 0:
+        return []
+
+    text = " ".join(cleaned)
 
     try:
-        vectorizer = TfidfVectorizer(stop_words="english")
+        vectorizer = TfidfVectorizer(stop_words="english", max_features=50)
         X = vectorizer.fit_transform([text])
 
-        feature_array = vectorizer.get_feature_names_out()
-        scores = X.toarray()[0]
+        words = vectorizer.get_feature_names_out()
 
-        word_scores = list(zip(feature_array, scores))
-        sorted_words = sorted(word_scores, key=lambda x: x[1], reverse=True)
+        if len(words) == 0:
+            return []
 
-        topics = [word for word, score in sorted_words[:top_n]]
+        return list(words[:top_n])
 
-        return topics
-
-    except:
+    except Exception:
         return []
