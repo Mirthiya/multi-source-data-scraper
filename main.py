@@ -49,10 +49,14 @@ except:
 for item in data:
 
     # topic tagging
-    item["topic_tags"] = extract_topics(item["content_chunks"])
+    if item["content_chunks"]:
+        item["topic_tags"] = extract_topics(item["content_chunks"])
+    else:
+        item["topic_tags"] = []
 
     # chunking
-    item["content_chunks"] = chunk_text(item["content_chunks"])
+    if item["content_chunks"]:
+        item["content_chunks"] = chunk_text(item["content_chunks"])
 
     # trust score
     item["trust_score"] = calculate_trust_score(
