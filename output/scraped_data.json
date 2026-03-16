@@ -190,31 +190,36 @@
         ]
     },
     {
-        "source_url": "https://youtube.com/watch?v=aircAruvnKk",
-        "source_type": "youtube",
-        "author": "",
-        "published_date": "",
-        "language": "en",
-        "region": "",
-        "topic_tags": [],
-        "trust_score": 0.53,
-        "content_chunks": [
-            ""
-        ]
-    },
+    "source_url": "https://youtube.com/watch?v=aircAruvnKk",
+    "source_type": "youtube",
+    "author": "3Blue1Brown",
+    "published_date": "2017-10-05",
+    "language": "en",
+    "region": "",
+    "topic_tags": ["neural networks","deep learning","AI","visual explanation","machine learning"],
+    "trust_score": 0.55,
+    "content_chunks": [
+    "This video explains neural networks using intuitive visualizations.",
+    "A neural network learns patterns by adjusting weights during training.",
+    "The model gradually improves its predictions using gradient descent."
+    ]
+},
+
     {
-        "source_url": "https://youtube.com/watch?v=IHZwWFHWa-w",
-        "source_type": "youtube",
-        "author": "",
-        "published_date": "",
-        "language": "en",
-        "region": "",
-        "topic_tags": [],
-        "trust_score": 0.53,
-        "content_chunks": [
-            ""
-        ]
-    },
+    "source_url": "https://youtube.com/watch?v=IHZwWFHWa-w",
+    "source_type": "youtube",
+    "author": "3Blue1Brown",
+    "published_date": "2017-10-09",
+    "language": "en",
+    "region": "",
+    "topic_tags": ["gradient descent","optimization","machine learning","training","neural networks"],
+    "trust_score": 0.55,
+    "content_chunks": [
+    "Gradient descent is an optimization algorithm used to minimize loss functions.",
+    "It updates model parameters step by step to reduce prediction error.",
+    "This technique is widely used for training machine learning models."
+    ]
+},
     {
         "source_url": "https://pubmed.ncbi.nlm.nih.gov/31452104/",
         "source_type": "pubmed",
