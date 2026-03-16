@@ -27,15 +27,12 @@ for blog in blogs:
 # YouTube sources
 videos = [
 "aircAruvnKk",
-"kCc8FmEb1nY"
+"IHZwWFHWa-w"
 ]
 
 for vid in videos:
-    try:
-        result = scrape_youtube(vid)
-        data.append(result)
-    except:
-        pass
+    result = scrape_youtube(vid)
+    data.append(result)
 
 
 # PubMed source
