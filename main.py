@@ -2,6 +2,9 @@ import json
 from scraper.blog_scraper import scrape_blog
 from scraper.youtube_scraper import scrape_youtube
 from scraper.pubmed_scraper import scrape_pubmed
+from utils.tagging import extract_topics
+from utils.chunking import chunk_text
+from scoring.trust_score import calculate_trust_score
 
 data = []
 
