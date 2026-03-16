@@ -5,13 +5,16 @@ def scrape_youtube(video_id):
 
     url = f"https://youtube.com/watch?v={video_id}"
 
-    yt = YouTube(url)
+    try:
+        yt = YouTube(url)
+        author = yt.author
+        publish_date = str(yt.publish_date)
+        description = yt.description
+    except:
+        author = ""
+        publish_date = ""
+        description = ""
 
-    channel = yt.author
-    publish_date = str(yt.publish_date)
-    description = yt.description
-
-    # Try to get transcript
     transcript_text = []
 
     try:
@@ -23,7 +26,7 @@ def scrape_youtube(video_id):
     return {
         "source_url": url,
         "source_type": "youtube",
-        "author": channel,
+        "author": author,
         "published_date": publish_date,
         "language": "en",
         "region": "",
