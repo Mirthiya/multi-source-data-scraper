@@ -2,16 +2,17 @@ import json
 from scraper.blog_scraper import scrape_blog
 from scraper.youtube_scraper import scrape_youtube
 from scraper.pubmed_scraper import scrape_pubmed
+
 from utils.tagging import extract_topics
 from utils.chunking import chunk_text
 from scoring.trust_score import calculate_trust_score
 
 data = []
 
-# Example blog sources
+# Blog sources
 blogs = [
-    "https://towardsdatascience.com/",
     "https://machinelearningmastery.com/",
+    "https://towardsdatascience.com/",
     "https://ai.googleblog.com/"
 ]
 
@@ -22,10 +23,11 @@ for blog in blogs:
     except:
         pass
 
-# YouTube videos
+
+# YouTube sources
 videos = [
-    "dQw4w9WgXcQ",
-    "3fumBcKC6RE"
+    "3fumBcKC6RE",
+    "dQw4w9WgXcQ"
 ]
 
 for vid in videos:
@@ -35,16 +37,34 @@ for vid in videos:
     except:
         pass
 
-# PubMed article
-pubmed_id = "31452104"
 
+# PubMed source
 try:
-    result = scrape_pubmed(pubmed_id)
+    result = scrape_pubmed("31452104")
     data.append(result)
 except:
     pass
 
 
+for item in data:
+
+    # topic tagging
+    item["topic_tags"] = extract_topics(item["content_chunks"])
+
+    # chunking
+    item["content_chunks"] = chunk_text(item["content_chunks"])
+
+    # trust score
+    item["trust_score"] = calculate_trust_score(
+        item["author"],
+        citations=20,
+        domain=item["source_url"],
+        year=2022,
+        disclaimer=False
+    )
+
+
+# Save JSON
 with open("output/scraped_data.json", "w") as f:
     json.dump(data, f, indent=4)
 
