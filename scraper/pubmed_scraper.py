@@ -4,28 +4,22 @@ from bs4 import BeautifulSoup
 def scrape_pubmed(pmid):
 
     url = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
-    response = requests.get(url)
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    r = requests.get(url)
 
-    title = ""
-    title_tag = soup.find("h1")
-    if title_tag:
-        title = title_tag.text.strip()
+    soup = BeautifulSoup(r.text,"html.parser")
 
-    authors = []
-    author_tags = soup.find_all("a", class_="full-name")
-    for a in author_tags:
-        authors.append(a.text.strip())
+    title = soup.find("h1").text.strip()
 
-    abstract = ""
-    abstract_tag = soup.find("div", class_="abstract-content")
-    if abstract_tag:
-        abstract = abstract_tag.text.strip()
+    authors = [a.text for a in soup.select(".authors-list .full-name")]
 
-    content_chunks = abstract.split(".")
+    abstract = soup.find("div", class_="abstract-content")
 
-    data = {
+    text = abstract.text.strip() if abstract else ""
+
+    chunks = text.split(".")
+
+    return {
         "source_url": url,
         "source_type": "pubmed",
         "author": ", ".join(authors),
@@ -34,7 +28,5 @@ def scrape_pubmed(pmid):
         "region": "",
         "topic_tags": [],
         "trust_score": "",
-        "content_chunks": content_chunks
+        "content_chunks": chunks
     }
-
-    return data
