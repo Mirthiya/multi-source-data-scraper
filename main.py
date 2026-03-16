@@ -48,21 +48,21 @@ except:
 
 for item in data:
 
-    # topic tagging
-    if item["content_chunks"]:
-        item["topic_tags"] = extract_topics(item["content_chunks"])
+    # Safety check for content
+    content = item.get("content_chunks", [])
+
+    if content and len(content) > 0:
+        item["topic_tags"] = extract_topics(content)
+        item["content_chunks"] = chunk_text(content)
     else:
         item["topic_tags"] = []
+        item["content_chunks"] = []
 
-    # chunking
-    if item["content_chunks"]:
-        item["content_chunks"] = chunk_text(item["content_chunks"])
-
-    # trust score
+    # Calculate trust score
     item["trust_score"] = calculate_trust_score(
-        item["author"],
+        item.get("author", ""),
         citations=20,
-        domain=item["source_url"],
+        domain=item.get("source_url", ""),
         year=2022,
         disclaimer=False
     )
