@@ -10,12 +10,12 @@ from scoring.trust_score import calculate_trust_score
 data = []
 
 # Blog sources
+#blogs = [    "https://machinelearningmastery.com/", "https://towardsdatascience.com/", "https://ai.googleblog.com/"]
 blogs = [
-    "https://machinelearningmastery.com/",
-    "https://towardsdatascience.com/",
-    "https://ai.googleblog.com/"
+"https://machinelearningmastery.com/what-is-machine-learning/",
+"https://towardsdatascience.com/understanding-neural-networks-19020b758230",
+"https://developers.googleblog.com/en/ai/"
 ]
-
 for blog in blogs:
     try:
         result = scrape_blog(blog)
