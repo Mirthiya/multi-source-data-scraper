@@ -13,9 +13,10 @@ data = []
 #blogs = [    "https://machinelearningmastery.com/", "https://towardsdatascience.com/", "https://ai.googleblog.com/"]
 blogs = [
 "https://machinelearningmastery.com/what-is-machine-learning/",
-"https://towardsdatascience.com/understanding-neural-networks-19020b758230",
-"https://developers.googleblog.com/en/ai/"
+"https://towardsdatascience.com/what-is-deep-learning-2317a1c31f3c",
+"https://towardsdatascience.com/neural-networks-explained-6e21c70e3b1c"
 ]
+
 for blog in blogs:
     try:
         result = scrape_blog(blog)
