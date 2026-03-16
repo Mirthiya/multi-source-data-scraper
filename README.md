@@ -95,7 +95,7 @@ multi-source-data-scraper
 Clone the repository:
 
 ```
-git clone https://github.com/your-username/multi-source-data-scraper.git
+git clone https://github.com/Mirthiya/multi-source-data-scraper.git
 ```
 
 Navigate to the project folder:
