@@ -26,8 +26,8 @@ for blog in blogs:
 
 # YouTube sources
 videos = [
-"https://youtube.com/watch?v=aircAruvnKk",
-"https://youtube.com/watch?v=kCc8FmEb1nY"
+"aircAruvnKk",
+"kCc8FmEb1nY"
 ]
 
 for vid in videos:
