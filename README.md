@@ -2,65 +2,132 @@
 
 ## Overview
 
-This project implements a **multi-source data scraping pipeline** that collects and processes information from different online sources including blogs, YouTube videos, and PubMed research articles.
+This project is about building a simple **data scraping pipeline** that collects information from different types of sources like blogs, YouTube videos, and PubMed articles.
 
-The system extracts metadata, processes textual content, performs topic tagging, and computes a trust score for each source. The processed information is stored in a structured JSON format.
+The main idea is to take raw data from these sources, process it, and store everything in a structured format (JSON). Along the way, the project also extracts useful information like topics and assigns a trust score to each source.
 
-This project demonstrates skills in:
+Through this project, I worked on:
 
 * Web scraping
-* Data preprocessing
-* Natural Language Processing (NLP)
-* Data structuring
-* Building automated data pipelines
+* Basic NLP (topic extraction)
+* Data cleaning and structuring
+* Building a small end-to-end pipeline
 
 ---
 
-## Data Sources
+## Data Collection
 
-The pipeline collects information from the following sources:
+The pipeline collects data from:
 
-* **Blogs**
+* **3 blog articles**
+* **2 YouTube videos**
+* **1 PubMed research article**
 
-  * Extracts article text, author, and publication date.
-
-* **YouTube Videos**
-
-  * Extracts video metadata and textual content (transcript or description).
-
-* **PubMed Articles**
-
-  * Extracts article metadata and abstract information.
+This was done to make sure the project handles multiple types of sources.
 
 ---
 
-## Extracted Fields
+## What Data is Extracted
 
-Each scraped source is structured into the following format:
+Each source is converted into a structured format with the following fields:
 
-* `source_url` – URL of the source
-* `source_type` – Type of source (blog, youtube, pubmed)
-* `author` – Author or channel name
-* `published_date` – Publication date
-* `language` – Detected language
-* `region` – Region information (if available)
-* `topic_tags` – Extracted keywords using NLP
-* `trust_score` – Calculated credibility score
-* `content_chunks` – Processed text split into smaller segments
+* `source_url` – link to the original content
+* `source_type` – blog / youtube / pubmed
+* `author` – author name or channel name
+* `published_date` – when it was published
+* `language` – detected language
+* `region` – region (if available)
+* `topic_tags` – important keywords extracted from content
+* `trust_score` – score between 0 and 1
+* `content_chunks` – text split into smaller parts
 
 ---
 
-## Features
+## What is Extracted from Each Source
 
-The pipeline performs the following operations:
+### Blogs
 
-1. Multi-source scraping
-2. Metadata extraction
-3. Language detection
-4. Topic extraction using TF-IDF
-5. Content chunking
-6. Trust score calculation
-7. Structured JSON output generation
+* Title
+* Author
+* Published date
+* Cleaned article text (removed unwanted parts)
+
+### YouTube
+
+* Channel name
+* Publish date
+* Video description
+* Transcript (if available, otherwise description is used)
+
+### PubMed
+
+* Title
+* Authors
+* Journal name
+* Abstract
+* Year
+
+---
+
+## Features of the Project
+
+The pipeline does the following:
+
+* Scrapes data from multiple sources
+* Extracts metadata
+* Detects language
+* Generates topic tags using TF-IDF
+* Splits large text into chunks
+* Calculates a trust score
+* Saves everything into a JSON file
+
+---
+
+## Trust Score (How it Works)
+
+Each source is given a score between **0 and 1** to estimate how reliable it is.
+
+The score is based on:
+
+* Author credibility
+* Number of references (citations)
+* Domain quality (trusted site or not)
+* How recent the content is
+* Whether any disclaimer is present
+
+Formula used:
+
+Trust Score =
+0.25 × Author Credibility +
+0.20 × Citation Count +
+0.20 × Domain Authority +
+0.20 × Recency +
+0.15 × Disclaimer Presence
+
+This is not perfect, but gives a reasonable estimate.
+
+---
+
+## Handling Edge Cases
+
+Some common issues were handled:
+
+* Missing author/date → default values used
+* Multiple authors → combined into one field
+* Empty content → skipped or handled safely
+* Long articles → split into chunks
+* Different languages → detected automatically
+
+---
+
+## Abuse / Data Quality Handling
+
+To avoid low-quality or misleading data:
+
+* Unknown authors → lower trust score
+* Weak or spammy websites → lower domain score
+* Outdated content → lower recency score
+* Missing disclaimers → reduces trust
 
 ---
 
@@ -89,15 +156,15 @@ multi-source-data-scraper
 
 ---
 
-## Installation
+## How to Run
 
-Clone the repository:
+Clone the repo:
 
 ```
-git clone https://github.com/Mirthiya/multi-source-data-scraper.git
+git clone https://github.com/your-username/multi-source-data-scraper.git
 ```
 
-Navigate to the project folder:
+Go to the folder:
 
 ```
 cd multi-source-data-scraper
@@ -109,23 +176,17 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
----
-
-## Running the Project
-
-Run the main pipeline:
+Run the project:
 
 ```
 python main.py
 ```
 
-This will scrape data from all configured sources and generate the output file.
-
 ---
 
-## Viewing the Output (Google Colab)
+## Viewing Output (Colab)
 
-If you run the project in **Google Colab**, you can view the generated output using:
+If you are using Google Colab:
 
 ```
 !cat output/scraped_data.json
@@ -135,28 +196,20 @@ If you run the project in **Google Colab**, you can view the generated output us
 
 ## Output
 
-The pipeline generates the following file:
+The output is stored in:
 
 ```
 output/scraped_data.json
 ```
 
-This JSON file contains processed data from:
+It contains processed data from all sources (blogs, YouTube, PubMed).
 
-* Blog articles
-* YouTube videos
-* PubMed research articles
-
-Each entry contains metadata, topic tags, trust score, and chunked content.
-
-**Note:**
-The `scraped_data.json` file included in this repository is a **sample output generated by running the pipeline in Google Colab**. The file was downloaded from the Colab environment and uploaded to the repository to demonstrate the working output of the project.
+Note:
+The output file in this repo is a **sample generated using Google Colab**, downloaded and uploaded here.
 
 ---
 
-## Environment
-
-This project was developed and executed using:
+## Environment Used
 
 * Python
 * Google Colab
@@ -164,11 +217,19 @@ This project was developed and executed using:
 
 ---
 
-## Applications
+## Where This Can Be Used
 
-This pipeline can be extended for:
+This kind of pipeline can be extended for:
 
-* Research data aggregation
+* Research data collection
+* Building datasets for ML
+* Content analysis
 * Knowledge extraction systems
-* AI training datasets
-* Content analysis platforms
+
+---
+
+## Final Note
+
+This project helped me understand how to combine **scraping + NLP + data processing** into a single pipeline.
+
+It’s a basic version, but it can be improved further by adding better models, APIs, or scaling it.
