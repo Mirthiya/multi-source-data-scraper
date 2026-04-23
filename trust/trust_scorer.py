@@ -58,12 +58,14 @@ class TrustScorer:
             record["trust_confidence"] = round(confidence, 3)
         return records
 
+    # ── Scoring ──────────────────────────────────
+
     def _score_record(self, record):
         features = self._extract_features(record)
         breakdown = {}
         raw_score = 0.0
 
-        # ── Base feature scoring ───────────────────
+        # Base feature scoring
         for feature, weight in FEATURE_WEIGHTS.items():
             value = features.get(feature, 0.0)
             contribution = value * weight
@@ -74,7 +76,7 @@ class TrustScorer:
             }
             raw_score += contribution
 
-        # ── 🔥 Custom Boost Logic (EXPLAINABLE) ────
+        # 🔥 Custom Boost Logic (EXPLAINABLE)
 
         if record.get("source_type") == "pubmed":
             raw_score += 0.1
@@ -88,10 +90,10 @@ class TrustScorer:
             raw_score += 0.05
             breakdown["length_boost"] = {"contribution": 0.05}
 
-        # ── Clamp score ───────────────────────────
+        # Clamp score
         final_score = max(0.0, min(1.0, raw_score))
 
-        # ── Confidence score ──────────────────────
+        # Confidence score
         data_present = sum(
             1 for k, v in features.items()
             if v > 0 and k != "disclaimer_penalty"
@@ -179,3 +181,36 @@ class TrustScorer:
         if ratio > 0.75:
             return 0.5
         return 0.0
+
+    # ── ✅ Report Helpers (FIX ADDED) ─────────────
+
+    @staticmethod
+    def summarize(records):
+        """Generate trust score summary"""
+        if not records:
+            return {}
+
+        scores = [r.get("trust_score", 0) for r in records]
+
+        by_source = {}
+        for r in records:
+            st = r.get("source_type", "unknown")
+            by_source.setdefault(st, []).append(r.get("trust_score", 0))
+
+        return {
+            "overall": {
+                "mean": round(sum(scores) / len(scores), 3),
+                "min": round(min(scores), 3),
+                "max": round(max(scores), 3),
+                "high_trust_pct": round(
+                    sum(1 for s in scores if s >= 0.7) / len(scores) * 100, 1
+                ),
+            },
+            "by_source_type": {
+                st: {
+                    "mean": round(sum(v) / len(v), 3),
+                    "count": len(v),
+                }
+                for st, v in by_source.items()
+            },
+        }
