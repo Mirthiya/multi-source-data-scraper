@@ -37,6 +37,9 @@ def make_record(
     All downstream processors expect this shape.
     """
     content_clean = content.strip()
+    author_value = authors[0] if authors else "Unknown"
+    published_date = date if date else "Unknown"
+    region_value = (extra or {}).get("region", "Global")
     return {
     # Internal fields (your pipeline)
     "source_id": hashlib.md5(url.encode()).hexdigest()[:12],
