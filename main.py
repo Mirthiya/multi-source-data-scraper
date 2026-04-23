@@ -6,6 +6,7 @@ Multi-Source Data Scraping Pipeline v2
 
 import asyncio
 import time
+import sys
 from pathlib import Path
 
 from scrapers.blog_scraper import BlogScraper
@@ -44,7 +45,16 @@ SOURCES = {
 OUTPUT_DIR = Path("output")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-# ── Fallback Data (DEDUP SAFE + LONG CONTENT) ─────
+# ── CLI ARGUMENT (Top N) ───────────────────────────
+
+top_n = 5
+if len(sys.argv) > 1:
+    try:
+        top_n = int(sys.argv[1])
+    except:
+        pass
+
+# ── Fallback Data ──────────────────────────────────
 
 def get_dummy_blog_records():
     return [
@@ -129,7 +139,7 @@ async def run_pipeline():
             logger.info(f"{scraper.__class__.__name__}: {len(result)} records")
             all_records.extend(result)
 
-    # ── Fix: Ensure minimum records ───────────────
+    # ── Ensure minimum records ─────────────────────
     blog_records = [r for r in all_records if r["source_type"] == "blog"]
     youtube_records = [r for r in all_records if r["source_type"] == "youtube"]
 
@@ -148,29 +158,48 @@ async def run_pipeline():
     lang = LanguageDetector()
     all_records = lang.filter_english(all_records)
 
-    # ── Phase 3: Dedup ────────────────────────────
+    # ── Phase 3: Deduplication ────────────────────
     logger.info("[Phase 3] Deduplication...")
     dedup = Deduplicator(threshold=0.85)
     all_records, dup_report = dedup.deduplicate(all_records)
 
-    # ── Phase 4: Topics ───────────────────────────
+    # ── Phase 4: Topic Tagging ────────────────────
     logger.info("[Phase 4] Topic tagging...")
     tagger = TopicTagger(method="keybert", top_n=5)
     all_records = tagger.tag_all(all_records)
 
-    # Map topics → required field
     for r in all_records:
         r["topic_tags"] = r.get("topics", [])
 
-    # ── Phase 5: Trust ────────────────────────────
+    # ── Phase 5: Trust Scoring ────────────────────
     logger.info("[Phase 5] Trust scoring...")
     scorer = TrustScorer()
     all_records = scorer.score_all(all_records)
+
+    #  Top Trusted Results
+    top_k = sorted(all_records, key=lambda x: x.get("trust_score") or 0, reverse=True)[:top_n]
+
+    logger.info("\nTop Trusted Sources:")
+    for i, r in enumerate(top_k, 1):
+        r["rank"] = i
+        logger.info(f"{i}. {r['source_type']} | Score: {r['trust_score']:.2f} | {r.get('title','')}")
+
+    #  Explainability
+    logger.info("\nTrust Score Breakdown:")
+    for r in top_k:
+        logger.info(f"{r.get('title','')} -> {r.get('trust_breakdown', {})}")
 
     # ── Phase 6: Evaluation ───────────────────────
     logger.info("[Phase 6] Evaluation...")
     evaluator = PipelineEvaluator()
     eval_report = evaluator.evaluate(all_records, dup_report)
+
+    #  Source Distribution
+    source_counts = {}
+    for r in all_records:
+        source_counts[r["source_type"]] = source_counts.get(r["source_type"], 0) + 1
+
+    logger.info(f"\nSource Distribution: {source_counts}")
 
     # ── Phase 7: Export ───────────────────────────
     logger.info("[Phase 7] Export...")
