@@ -24,3 +24,4 @@ pandas>=2.2.0                  # data manipulation
 # ── Utilities ────────────────────────────────────────
 python-dateutil>=2.9.0         # robust date parsing
 tqdm>=4.66.0                   # progress bars
+typing-extensions>=4.8.0
