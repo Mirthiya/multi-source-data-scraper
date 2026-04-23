@@ -36,10 +36,10 @@ from utils.exporter import export_results
 
 SOURCES = {
     "blogs": [
-        "https://towardsdatascience.com/what-is-retrieval-augmented-generation-rag",
-        "https://machinelearningmastery.com/a-gentle-introduction-to-transfer-learning/",
-        "https://openai.com/blog/chatgpt",
-    ],
+    "https://en.wikipedia.org/wiki/Machine_learning",
+    "https://en.wikipedia.org/wiki/Artificial_intelligence",
+    "https://www.ibm.com/topics/machine-learning"
+],
     "youtube": [
         "https://www.youtube.com/watch?v=T-D1OfcDW1M",  # RAG explained
         "https://www.youtube.com/watch?v=aircAruvnKk",  # Neural networks
