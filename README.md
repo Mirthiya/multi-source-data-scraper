@@ -176,7 +176,7 @@ Evaluation Summary:
 ---
 ## Sample Run
 
-![Pipeline Output](./output.png)
+![Pipeline Output](./outputn.png)
 ## Evaluation Metrics
 
 The pipeline evaluates:
