@@ -142,7 +142,7 @@ async def run_pipeline():
             all_records.append(dummy)
             youtube_records.append(dummy)
 
-    logger.info(f"  After fallback → Blogs: {len(blog_records)}, YouTube: {len(youtube_records)}")
+    logger.info(f"  After fallback -> Blogs: {len(blog_records)}, YouTube: {len(youtube_records)}")
     logger.info(f"  Total raw records: {len(all_records)}")
 
     # ── 2. Language Detection ──────────────────────────────────────────────────
