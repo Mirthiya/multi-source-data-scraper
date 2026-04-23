@@ -1,137 +1,102 @@
-# Multi-Source Data Scraping and Processing Pipeline
+#  Multi-Source Data Scraping Pipeline v2
 
-## Overview
-
-This project is about building a simple **data scraping pipeline** that collects information from different types of sources like blogs, YouTube videos, and PubMed articles.
-
-The main idea is to take raw data from these sources, process it, and store everything in a structured format (JSON). Along the way, the project also extracts useful information like topics and assigns a trust score to each source.
-
-Through this project, I worked on:
-
-* Web scraping
-* Basic NLP (topic extraction)
-* Data cleaning and structuring
-* Building a small end-to-end pipeline
+> End-to-end pipeline for **multi-source data collection, NLP processing, trust scoring, and evaluation**
 
 ---
 
-## Data Collection
+##  Overview
 
-The pipeline collects data from:
+This project builds a **production-style data pipeline** that aggregates content from heterogeneous sources (blogs, YouTube, PubMed), processes it using NLP, and evaluates reliability through an explainable trust scoring system.
 
-* **3 blog articles**
-* **2 YouTube videos**
-* **1 PubMed research article**
+It simulates a real-world **data engineering + ML pipeline**, combining:
 
-This was done to make sure the project handles multiple types of sources.
-
----
-
-## What Data is Extracted
-
-Each source is converted into a structured format with the following fields:
-
-* `source_url` – link to the original content
-* `source_type` – blog / youtube / pubmed
-* `author` – author name or channel name
-* `published_date` – when it was published
-* `language` – detected language
-* `region` – region (if available)
-* `topic_tags` – important keywords extracted from content
-* `trust_score` – score between 0 and 1
-* `content_chunks` – text split into smaller parts
+* Data ingestion
+* NLP-based enrichment
+* Deduplication
+* Trust scoring (with explainability)
+* Evaluation metrics
 
 ---
 
-## What is Extracted from Each Source
+##  What's New in v2
 
-### Blogs
-
-* Title
-* Author
-* Published date
-* Cleaned article text (removed unwanted parts)
-
-### YouTube
-
-* Channel name
-* Publish date
-* Video description
-* Transcript (if available, otherwise description is used)
-
-### PubMed
-
-* Title
-* Authors
-* Journal name
-* Abstract
-* Year
+| Area          | v1             | v2                                                 |
+| ------------- | -------------- | -------------------------------------------------- |
+| Scraping      | Sync, no retry | Async (`httpx`), exponential backoff, multi-source |
+| Topics        | TF-IDF         | KeyBERT (BERT embeddings + MMR diversity)          |
+| Trust Score   | Fixed weights  | Multi-feature + explainable scoring                |
+| Deduplication | None           | Cosine similarity (threshold = 0.85)               |
+| Evaluation    | Not available  | Multi-metric evaluation pipeline                   |
 
 ---
 
-## Features of the Project
+##  Architecture
 
-The pipeline does the following:
-
-* Scrapes data from multiple sources
-* Extracts metadata
-* Detects language
-* Generates topic tags using TF-IDF
-* Splits large text into chunks
-* Calculates a trust score
-* Saves everything into a JSON file
+```
+Data Sources → Scrapers → Processing → Topic Extraction → Deduplication → Trust Scoring → Evaluation → Output
+```
 
 ---
 
-## Trust Score (How it Works)
+##  Data Sources
 
-Each source is given a score between **0 and 1** to estimate how reliable it is.
+* 📰 Blogs (articles)
+* 📺 YouTube (metadata + transcripts)
+* 🔬 PubMed (research abstracts)
 
-The score is based on:
+---
+
+##  Core Features
+
+###  1. Async Multi-Source Scraping
+
+* Handles multiple sources concurrently
+* Retry with exponential backoff
+* Robust to network/API failures
+
+###  2. NLP Processing
+
+* Language detection
+* Text cleaning + normalization
+* Content chunking for analysis
+
+###  3. Topic Extraction (KeyBERT)
+
+* Uses BERT embeddings for semantic understanding
+* MMR ensures diverse keyword selection
+
+###  4. Deduplication
+
+* Cosine similarity-based filtering
+* Removes redundant content across sources
+
+###  5. Explainable Trust Scoring
+
+Each record is scored (0–1) using:
 
 * Author credibility
-* Number of references (citations)
-* Domain quality (trusted site or not)
-* How recent the content is
-* Whether any disclaimer is present
+* Citation/reference signals
+* Domain quality
+* Recency
+* Content quality indicators
 
-Formula used:
-
-Trust Score =
-0.25 × Author Credibility +
-0.20 × Citation Count +
-0.20 × Domain Authority +
-0.20 × Recency +
-0.15 × Disclaimer Presence
-
-This is not perfect, but gives a reasonable estimate.
+ Includes **per-record explainability output**
 
 ---
 
-## Handling Edge Cases
+## Evaluation Metrics
 
-Some common issues were handled:
+The pipeline evaluates:
 
-* Missing author/date → default values used
-* Multiple authors → combined into one field
-* Empty content → skipped or handled safely
-* Long articles → split into chunks
-* Different languages → detected automatically
-
----
-
-## Abuse / Data Quality Handling
-
-To avoid low-quality or misleading data:
-
-* Unknown authors → lower trust score
-* Weak or spammy websites → lower domain score
-* Outdated content → lower recency score
-* Missing disclaimers → reduces trust
+* Data completeness
+* Source diversity
+* Topic relevance
+* Deduplication effectiveness
+* Trust score distribution
 
 ---
 
-## Project Structure
+##  Project Structure
 
 ```
 multi-source-data-scraper
@@ -140,96 +105,98 @@ multi-source-data-scraper
 ├── requirements.txt
 ├── README.md
 │
-├── scrapers
-│   ├── blog_scraper.py
-│   ├── youtube_scraper.py
-│   └── pubmed_scraper.py
-│
-├── utils
-│   ├── chunking.py
-│   ├── tagging.py
-│   └── trust_score.py
-│
-└── output
-    └── scraped_data.json
+├── scrapers/
+├── processors/
+├── trust/
+├── evaluation/
+├── utils/
 ```
 
 ---
 
-## How to Run
+##  How to Run
 
-Clone the repo:
-
-```
-git clone https://github.com/your-username/multi-source-data-scraper.git
-```
-
-Go to the folder:
-
-```
-cd multi-source-data-scraper
-```
-
-Install dependencies:
-
-```
+```bash
 pip install -r requirements.txt
-```
-
-Run the project:
-
-```
 python main.py
 ```
 
 ---
 
-## Viewing Output (Colab)
+##  Output Files
 
-If you are using Google Colab:
+| File                       | Description             |
+| -------------------------- | ----------------------- |
+| `scraped_data.json`        | Full structured dataset |
+| `scraped_data.csv`         | Tabular format          |
+| `evaluation_report.json`   | Pipeline metrics        |
+| `trust_explainability.csv` | Trust score breakdown   |
 
-```
-!cat output/scraped_data.json
+---
+
+##  Sample Output (Preview)
+
+```json
+{
+  "source_type": "blog",
+  "author": "John Doe",
+  "topic_tags": ["machine learning", "data pipeline"],
+  "trust_score": 0.82
+}
 ```
 
 ---
 
-## Output
+##  Key Highlights
 
-The output is stored in:
-
-```
-output/scraped_data.json
-```
-
-It contains processed data from all sources (blogs, YouTube, PubMed).
-
-Note:
-The output file in this repo is a **sample generated using Google Colab**, downloaded and uploaded here.
+* End-to-end pipeline (scraping → NLP → evaluation)
+* Combines **data engineering + ML concepts**
+* Modular and extensible design
+* Focus on **explainability and robustness**
 
 ---
 
-## Environment Used
+##  Applications
+
+* Dataset generation for ML
+* Research aggregation systems
+* Content intelligence platforms
+* Knowledge extraction pipelines
+
+---
+
+##  Tech Stack
 
 * Python
-* Google Colab
-* GitHub
+* httpx (async requests)
+* KeyBERT (NLP)
+* scikit-learn (similarity)
+* JSON / CSV
 
 ---
 
-## Where This Can Be Used
+##  Future Improvements
 
-This kind of pipeline can be extended for:
-
-* Research data collection
-* Building datasets for ML
-* Content analysis
-* Knowledge extraction systems
+* Add LLM-based summarization
+* Deploy as API (FastAPI)
+* Add dashboard for analytics
+* Scale with distributed scraping
 
 ---
 
-## Final Note
+##  Author
 
-This project helped me understand how to combine **scraping + NLP + data processing** into a single pipeline.
+**Mirthiya**
+🔗 GitHub: https://github.com/Mirthiya
 
-It’s a basic version, but it can be improved further by adding better models, APIs, or scaling it.
+---
+
+##  Final Note
+
+This project demonstrates how to build a **real-world inspired data pipeline** with a strong focus on:
+
+* Scalability
+* Explainability
+* Structured data processing
+
+It reflects practical skills in **data engineering, NLP, and system design**.
