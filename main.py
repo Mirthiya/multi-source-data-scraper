@@ -106,22 +106,48 @@ async def run_pipeline():
             }
         ]
 
-    def get_dummy_youtube_records():
-        return [
-            {
-                "source_type": "youtube",
-                "url": "fallback_youtube",
-                "title": "AI Explained",
-                "content": "This video explains artificial intelligence and machine learning concepts.",
-                "authors": ["Fallback"],
-                "date": "2024",
-                "language": "en",
-                "region": "global",
-                "topics": ["AI", "machine learning"],
-                "trust_score": 0.5,
-                "content_chunks": ["AI concepts explained."]
-            }
-        ]
+    def get_dummy_blog_records():
+    return [
+        {
+            "source_type": "blog",
+            "url": "fallback_blog_1",
+            "title": "Machine Learning Basics",
+            "content": "Machine learning is a field of artificial intelligence that focuses on building systems that can learn from data and improve over time without being explicitly programmed. It is widely used in healthcare, finance, recommendation systems, and automation to make intelligent decisions.",
+            "authors": ["Fallback"],
+            "date": "2024",
+            "language": "en",
+            "region": "global",
+            "topics": ["machine learning", "AI"],
+            "trust_score": 0.5,
+            "content_chunks": ["Machine learning is a field of artificial intelligence that focuses on building systems that can learn from data."]
+        },
+        {
+            "source_type": "blog",
+            "url": "fallback_blog_2",
+            "title": "Artificial Intelligence Overview",
+            "content": "Artificial intelligence refers to the simulation of human intelligence in machines that are programmed to think, learn, and solve problems. AI systems are used in applications such as speech recognition, image processing, autonomous vehicles, and predictive analytics across industries.",
+            "authors": ["Fallback"],
+            "date": "2024",
+            "language": "en",
+            "region": "global",
+            "topics": ["AI", "technology"],
+            "trust_score": 0.5,
+            "content_chunks": ["Artificial intelligence refers to the simulation of human intelligence in machines."]
+        },
+        {
+            "source_type": "blog",
+            "url": "fallback_blog_3",
+            "title": "Deep Learning Introduction",
+            "content": "Deep learning is a subset of machine learning that uses neural networks with multiple layers to analyze complex patterns in data. It has been highly successful in areas such as computer vision, natural language processing, and speech recognition, enabling advanced AI applications.",
+            "authors": ["Fallback"],
+            "date": "2024",
+            "language": "en",
+            "region": "global",
+            "topics": ["deep learning", "neural networks"],
+            "trust_score": 0.5,
+            "content_chunks": ["Deep learning is a subset of machine learning that uses neural networks."]
+        }
+    ]
 
     # Count current records
     blog_records = [r for r in all_records if r["source_type"] == "blog"]
