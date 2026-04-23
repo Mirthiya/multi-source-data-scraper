@@ -8,6 +8,8 @@ Modular, async, production-grade pipeline with:
   - Deduplication via cosine similarity
   - Full evaluation metrics & explainability report
 """
+# -*- coding: utf-8 -*-
+
 
 import asyncio
 import json
