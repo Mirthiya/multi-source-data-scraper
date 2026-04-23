@@ -1,46 +1,39 @@
 #  Multi-Source Data Scraping Pipeline v2
 
-> Production-style pipeline for **collecting, enriching, scoring, and ranking content from multiple sources**
+> Production-style pipeline for **collecting, enriching, scoring, and ranking content across multiple sources with explainable trust intelligence**
 
 ---
 
-##  What This Project Does
+##  What This Project Solves
 
-This project builds an **end-to-end data pipeline** that:
+In real-world systems, not all information is reliable.
 
-1. Scrapes content from multiple sources (Blogs, YouTube, PubMed)
-2. Extracts meaningful insights using NLP
+This project answers a critical question:
+
+> **“Which sources are actually trustworthy — and why?”**
+
+It builds an **end-to-end data pipeline** that not only collects data, but **evaluates credibility, ranks sources, and explains decisions**.
+
+---
+
+##  What This Pipeline Does
+
+1. Scrapes content from multiple sources (Blogs, YouTube, PubMed, Reddit)
+2. Cleans and processes text using NLP
 3. Removes duplicate or low-quality data
-4. Assigns a **trust score (0–1)** using explainable logic
-5. Outputs a clean, structured dataset ready for downstream use
-
- The system is designed to answer:
-**“Which sources are actually trustworthy?”**
-
----
-
-##  Why This Matters
-
-In real-world systems (healthcare, finance, research), not all content is reliable.
-
-This pipeline can be used for:
-
--  Misinformation detection  
--  Research aggregation  
--  Content credibility ranking  
--  RAG / AI knowledge pipelines  
+4. Assigns a **trust score (0–1)** using multi-feature logic
+5. Ranks sources based on credibility
+6. Provides **explainability for every score**
+7. Outputs structured datasets for downstream use
 
 ---
 
-##  Key Improvements (v1 → v2)
-
-| Area          | v1                     | v2 (Current)                                      |
-| ------------- | ---------------------- | ------------------------------------------------ |
-| Scraping      | Sync, fragile          | Async (`httpx`), retries, failure isolation       |
-| NLP           | TF-IDF                 | KeyBERT (BERT embeddings + semantic relevance)    |
-| Trust Score   | Basic weighted         | Multi-feature + explainable scoring               |
-| Deduplication | None                   | Cosine similarity (threshold = 0.85)              |
-| Evaluation    | Not available          | Multi-metric evaluation pipeline                 |
+##  What Makes This Project Different
+- Handles **real-world scraping failures** (403 errors, missing data)
+- Uses **fallback strategies** to guarantee minimum dataset
+- Implements **explainable trust scoring** (not black-box)
+- Supports **ranking of top trusted sources**
+- Designed as a **modular, production-style pipeline**
 
 ---
 
@@ -49,15 +42,17 @@ This pipeline can be used for:
 
 Data Sources
 ↓
-Async Scrapers
+Async Scrapers (Fault-Tolerant)
 ↓
-Language + Cleaning
+Language Filtering + Cleaning
 ↓
-Topic Extraction (KeyBERT)
+Semantic Topic Extraction (KeyBERT)
 ↓
 Deduplication (Cosine Similarity)
 ↓
-Trust Scoring (Explainable)
+Trust Scoring (Explainable + Feature-Based)
+↓
+Ranking Engine (Top Trusted Sources)
 ↓
 Evaluation Metrics
 ↓
@@ -68,66 +63,72 @@ Structured Output (JSON + CSV)
 
 ##  Data Sources
 
--  Blogs (article content)
+-  Blogs (articles)
 -  YouTube (transcripts / descriptions)
--  PubMed (research abstracts)
+-  PubMed (research papers)
+-  Reddit (community discussions)
 
 ---
 
 ##  Core Features
 
 ###  Async Multi-Source Scraping
-- Concurrent scraping using `asyncio + httpx`
+- Built using `asyncio + httpx`
 - Retry with exponential backoff
-- Fault-tolerant (one failure ≠ pipeline failure)
+- Failure isolation (pipeline never crashes)
 
 ---
 
 ###  NLP Processing
-- Language detection (filters non-English)
-- Text normalization & cleaning
-- Content chunking for downstream tasks
+- Language detection (English filtering)
+- Text cleaning & normalization
+- Content chunking for analysis
 
 ---
 
 ###  Semantic Topic Extraction (KeyBERT)
 - Uses transformer embeddings (`all-MiniLM-L6-v2`)
-- Captures **meaning**, not just word frequency
-- MMR ensures diverse, non-redundant topics
+- Captures semantic meaning (not just keywords)
+- MMR ensures diverse topic coverage
 
 ---
 
 ###  Deduplication Engine
-- Removes duplicate content across sources
-- Uses cosine similarity (threshold = 0.85)
-- Keeps highest-quality version
+- Removes redundant content across sources
+- Cosine similarity threshold = 0.85
+- Preserves highest-quality version
 
 ---
 
-###  Explainable Trust Scoring
+###  Explainable Trust Scoring (⭐ Highlight)
 
-Each source is scored (0–1) using multiple signals:
+Each record is scored using multiple signals:
 
-- Author credibility  
-- Citation/reference presence  
 - Domain authority  
+- Author credibility  
+- Citation presence  
 - Recency  
 - Content quality  
 
- Includes **per-record breakdown** → fully auditable
+Plus custom boosts:
+- PubMed → high trust  
+- Wikipedia → moderate trust  
+- Long-form content → higher reliability  
+
+ Every score includes a **feature-level breakdown**
 
 ---
 
-##  Example: Top Trusted Results
+###  Ranking Engine (NEW )
 
 ```python
-top_articles = sorted(data, key=lambda x: x["trust_score"], reverse=True)[:3]
-
- Enables ranking and filtering of high-quality sources
-
+top_k = sorted(data, key=lambda x: x["trust_score"], reverse=True)[:5]
+Identifies top trusted sources
+Enables filtering for high-quality data
+Useful for RAG / AI pipelines
  Evaluation Metrics
 
-The pipeline measures:
+The pipeline evaluates:
 
 Data completeness
 Source coverage
@@ -155,19 +156,20 @@ python main.py
 Output Files
 File	Description
 scraped_data.json	Full structured dataset
-scraped_data.csv	Tabular version
-evaluation_report.json	Pipeline performance metrics
-trust_explainability.csv	Feature-level score breakdown
+scraped_data.csv	Tabular format
+evaluation_report.json	Pipeline metrics
+trust_explainability.csv	Feature-level breakdown
 
 Sample Output
 {
-  "source_type": "blog",
-  "author": "John Doe",
-  "topics": ["machine learning", "healthcare AI"],
-  "trust_score": 0.82,
+  "source_type": "pubmed",
+  "author": "Research Team",
+  "topic_tags": ["cancer therapy", "nanotechnology"],
+  "trust_score": 0.89,
   "trust_breakdown": {
-    "domain_authority": 0.9,
-    "citations": 0.7
+    "domain_authority": 1.0,
+    "citation_presence": 1.0,
+    "pubmed_boost": 0.1
   }
 }
 
@@ -179,32 +181,24 @@ scikit-learn (similarity)
 JSON / CSV
 
 Future Improvements
-LLM-based summarization (Mistral / GPT)
-Vector database (FAISS / Pinecone)
+LLM-based summarization (GPT / Mistral)
+Vector database integration (FAISS / Pinecone)
 FastAPI deployment
 Scheduled pipelines (Airflow)
 
 Final Note
+This project goes beyond simple scraping:
 
-This project demonstrates how to design a real-world data pipeline that goes beyond scraping:
-
-✔ Robust engineering
+✔ Robust data engineering
 ✔ Semantic understanding
-✔ Explainable scoring
-✔ Practical usability
+✔ Explainable AI scoring
+✔ Real-world system design
 
- Built with a focus on production readiness, scalability, and trust-aware data processing
+Built with a focus on scalability, reliability, and trust-aware data processing
 
-
----
-
-#  Why this version is better
-
-- Strong **opening hook (“what this does”)**
-- Clear **real-world relevance**
-- Shows **decision-making**, not just features
-- Adds **“Top trusted results” (VERY important)**
-- Reads like a **product, not assignment**
 
 ---
 
+nguage**  
+
+---
