@@ -285,6 +285,9 @@ The pipeline outputs data in the following structured format:
 * Explainability is essential for understanding and validating model decisions
 
 ---
+##  Note
+Note: Some websites block automated scraping (HTTP 403).
+The pipeline uses fallback mechanisms to ensure minimum data availability.
 
 ## Tech Stack
 
