@@ -100,8 +100,7 @@ Structured Output (JSON + CSV)
 
 ---
 
-###  Explainable Trust Scoring (⭐ Highlight)
-
+###  Explainable Trust Scoring 
 Each record is scored using multiple signals:
 
 - Domain authority  
@@ -199,6 +198,5 @@ Built with a focus on scalability, reliability, and trust-aware data processing
 
 ---
 
-nguage**  
 
 ---
