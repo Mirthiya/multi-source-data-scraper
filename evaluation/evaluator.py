@@ -57,7 +57,7 @@ class PipelineEvaluator:
             "source_types_count": len(source_counts),
             "target_sources": ["blog", "youtube", "pubmed", "reddit"],
             "coverage_pct": round(
-                len(source_counts & {"blog", "youtube", "pubmed", "reddit"}) / 4 * 100, 1
+                len(set(source_counts.keys()) & {"blog", "youtube", "pubmed", "reddit"}) / 4 * 100, 1
             ),
         }
 
