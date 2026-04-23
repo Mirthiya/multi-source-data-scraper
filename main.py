@@ -1,14 +1,16 @@
+# -*- coding: utf-8 -*-
+
 """
 Multi-Source Data Scraping Pipeline v2
-======================================
+
 Modular, async, production-grade pipeline with:
-  - Async scraping with retry + rate-limiting
-  - KeyBERT semantic topic tagging
-  - Adaptive ML-based trust scoring
-  - Deduplication via cosine similarity
-  - Full evaluation metrics & explainability report
+- Async scraping with retry + rate-limiting
+- KeyBERT semantic topic tagging
+- Adaptive ML-based trust scoring
+- Deduplication via cosine similarity
+- Full evaluation metrics & explainability report
 """
-# -*- coding: utf-8 -*-
+
 
 
 import asyncio
