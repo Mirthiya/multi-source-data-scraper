@@ -182,12 +182,14 @@ async def run_pipeline():
     logger.info("\nTop Trusted Sources:")
     for i, r in enumerate(top_k, 1):
         r["rank"] = i
-        logger.info(f"{i}. {r['source_type']} | Score: {r['trust_score']:.2f} | {r.get('title','')}")
+        safe_title = r.get("title", "").encode("ascii", "ignore").decode()
+        logger.info(f"{i}. {r['source_type']} | Score: {r['trust_score']:.2f} | {safe_title}")
 
     #  Explainability
     logger.info("\nTrust Score Breakdown:")
     for r in top_k:
-        logger.info(f"{r.get('title','')} -> {r.get('trust_breakdown', {})}")
+        safe_title = r.get("title", "").encode("ascii", "ignore").decode()
+        logger.info(f"{safe_title} -> {r.get('trust_breakdown', {})}")
 
     # ── Phase 6: Evaluation ───────────────────────
     logger.info("[Phase 6] Evaluation...")
