@@ -16,6 +16,34 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 
+# ── Content Chunking (FINAL FIX) ──────────────────────────────────────────────
+
+def _chunk_content(text: str, max_words: int = 80) -> list[str]:
+    """
+    Splits content into meaningful chunks.
+    Uses paragraph split first, then falls back to word chunks.
+    """
+    if not text:
+        return []
+
+    # Step 1: Try paragraph-based split
+    paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+
+    if len(paragraphs) >= 2:
+        return paragraphs
+
+    # Step 2: Fallback to fixed-size chunks
+    words = text.split()
+    chunks = []
+
+    for i in range(0, len(words), max_words):
+        chunk = " ".join(words[i:i + max_words])
+        if chunk.strip():
+            chunks.append(chunk)
+
+    return chunks
+
+
 # ── Transform to Assignment Schema ────────────────────────────────────────────
 
 def _transform_record(r: dict) -> dict:
@@ -33,11 +61,7 @@ def _transform_record(r: dict) -> dict:
         "region": r.get("region", "Global"),
         "topic_tags": r.get("topics", []),
         "trust_score": r.get("trust_score"),
-        "content_chunks": [
-            chunk.strip()
-            for chunk in content.split("\n\n")
-            if chunk.strip()
-        ]
+        "content_chunks": _chunk_content(content)
     }
 
 
@@ -54,7 +78,7 @@ def export_results(records: list[dict], eval_report: dict, output_dir: Path):
     logger.info(f"Exporter: all outputs saved to {output_dir}/")
 
 
-# ── JSON Export (FIXED) ───────────────────────────────────────────────────────
+# ── JSON Export (FIXED + TRANSFORMED) ─────────────────────────────────────────
 
 def _export_json(records: list[dict], path: Path):
     """
