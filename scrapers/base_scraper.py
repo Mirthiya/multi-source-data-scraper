@@ -38,23 +38,32 @@ def make_record(
     """
     content_clean = content.strip()
     return {
-        "source_id": hashlib.md5(url.encode()).hexdigest()[:12],
-        "source_type": source_type,
-        "url": url,
-        "domain": domain or _extract_domain(url),
-        "title": title.strip(),
-        "authors": authors or [],
-        "date": date or datetime.utcnow().strftime("%Y-%m-%d"),
-        "content": content_clean,
-        "word_count": len(content_clean.split()),
-        "topics": [],          # filled by TopicTagger
-        "trust_score": None,   # filled by TrustScorer
-        "trust_breakdown": {}, # filled by TrustScorer
-        "language": "unknown", # filled by LanguageDetector
-        "scrape_timestamp": datetime.utcnow().isoformat(),
-        **(extra or {}),
-    }
+    # Internal fields (your pipeline)
+    "source_id": hashlib.md5(url.encode()).hexdigest()[:12],
+    "source_type": source_type,
+    "url": url,
+    "domain": domain or _extract_domain(url),
+    "title": title.strip(),
+    "authors": authors or ["Unknown"],
+    "date": date or datetime.utcnow().strftime("%Y-%m-%d"),
+    "content": content_clean,
+    "word_count": len(content_clean.split()),
+    "topics": [],
+    "trust_score": None,
+    "trust_breakdown": {},
+    "language": "unknown",
+    "scrape_timestamp": datetime.utcnow().isoformat(),
 
+    #  REQUIRED ASSIGNMENT FIELDS (IMPORTANT)
+    "source_url": url,
+    "author": author_value,
+    "published_date": published_date,
+    "region": region_value,
+    "topic_tags": [],  # will be filled later
+    "content_chunks": content_clean.split(".")[:5],  # simple chunking
+
+    **(extra or {}),
+}
 
 def _extract_domain(url: str) -> str:
     try:
