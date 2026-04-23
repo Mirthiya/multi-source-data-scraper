@@ -239,6 +239,22 @@ Running the pipeline generates:
 | trust_explainability.csv | Feature-level trust breakdown |
 
 ---
+## Output Schema
+
+The pipeline outputs data in the following structured format:
+
+```json
+{
+  "source_url": "",
+  "source_type": "",
+  "author": "",
+  "published_date": "",
+  "language": "",
+  "region": "",
+  "topic_tags": [],
+  "trust_score": 0.0,
+  "content_chunks": []
+}
 
 ## Sample Output
 
